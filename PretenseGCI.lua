@@ -136,7 +136,7 @@ do
             local context = self.context
             if event.id == world.event.S_EVENT_BIRTH and event.initiator and event.initiator.getPlayerName then
 				local player = event.initiator:getPlayerName()
-				if player then
+				if player and event.initiator:getCoalition() == context.side then
 					local groupid = event.initiator:getGroup():getID()
                     local groupname = event.initiator:getGroup():getName()
                     local unit = event.initiator

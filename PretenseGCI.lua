@@ -1,11 +1,10 @@
 --[[
-SimpleGCI
+PretenseGCI
 ## Description:
 
 Simple text based GCI script.
-Uses coalition EWR, Search Radars and AWACS.
-
 Standalone version of the GCI from my Pretense mission.
+Uses coalition EWR, Search Radars and AWACS.
 
 Load script at mission start then call GCI:new(side) to initialize a GCI for the coalition you choose. 
 Side should be 1 for red and 2 for blue coalition.
@@ -16,7 +15,7 @@ Pretense: <https://www.digitalcombatsimulator.com/en/files/3331159/>
 
 If you'd like to buy me a beer: <https://www.buymeacoffee.com/dzsek>
 
-@script SimpleGCI
+@script PretenseGCI
 @author Dzsekeb
 ]]
 

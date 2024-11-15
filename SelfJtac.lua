@@ -1,3 +1,30 @@
+--[[
+SelfJTAC
+## Description:
+
+Allows self lasing for UH-60, OH-6 and Gazelle aircraft.
+
+Just add it to the mission in a doscriptfile action.
+
+The use of mist is optional, but it enables coordinates to be displayed for the target.
+
+Script can be enabled for any other aircraft by adding an entry into the aircraftStats table at the end of the script.
+
+SelfJtac.aircraftStats = {
+	['SA342L'] =        { minDist = 10, maxDeviation = 120, laserOffset = { x = 1.4, y = 1.1, z = -0.35 }  },
+	['SA342M'] =        { minDist = 15, maxDeviation = 120, laserOffset =  { x = 1.4, y = 1.23, z = -0.35 }   },
+	['UH-60L'] =        { minDist = 10,  maxDeviation = 45,  laserOffset = { x = 4.65, y = -1.8, z = 0 }   },
+	['OH-6A'] =         { minDist = 10,  maxDeviation = 45,  laserOffset = { x = 1.35, y = 0.1, z = 0 }   },
+}
+
+minDist - range of laser and target search
+maxDeviation - deviation in angles toward left/right from boresight at which targets are searched for
+laserOffset - local offset for the laser origin from the body of the aircraft
+
+@script SelfJTAC
+@author Dzsekeb
+]]
+
 SelfJtac = {}
 
 do

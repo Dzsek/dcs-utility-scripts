@@ -166,27 +166,26 @@ do
         
         if not self.prevPnt or dst >= 0.5 then
 
-            
             if self.lasers.tgt then
-                self.lasers.tgt:destroy()
-                self.lasers.tgt = nil
+                self.lasers.tgt:setPoint(pnt)
+            else
+                self.lasers.tgt = Spot.createLaser(meun, { x = 0, y = 5.0, z = 0 }, SelfJtac.getPointOnSurface(pnt), self.laserCode)
             end
             
             if self.lasers.ir then
-                self.lasers.ir:destroy()
-                self.lasers.ir = nil
+                self.lasers.ir:setPoint(pnt)
+            else
+                self.lasers.ir = Spot.createInfraRed(meun, stats.laserOffset, pnt)
             end
 
             self.prevPnt = pnt
-            self.lasers.tgt = Spot.createLaser(meun, { x = 0, y = 5.0, z = 0 }, pnt, self.laserCode)
-            self.lasers.ir = Spot.createInfraRed(meun, stats.laserOffset, pnt)
         end
 		
 		self.target = unit:getName()
 
         timer.scheduleFunction(function(param, time)
             param:updateTarget()
-        end, self, timer.getTime()+5)
+        end, self, timer.getTime()+0.5)
 	end
 	
 	function SelfJtac:printTarget(makeitlast)
@@ -213,14 +212,23 @@ do
 				end
 				
 				toprint = toprint..'Lasing '..tgttype..'\nCode: '..self.laserCode..'\n'
+				local lat,lon,alt = coord.LOtoLL(pnt)
+				local mgrs = coord.LLtoMGRS(coord.LOtoLL(pnt))
                 if mist then
-                    local lat,lon,alt = coord.LOtoLL(pnt)
-                    local mgrs = coord.LLtoMGRS(coord.LOtoLL(pnt))
                     toprint = toprint..'\nDDM:  '.. mist.tostringLL(lat,lon,3)
                     toprint = toprint..'\nDMS:  '.. mist.tostringLL(lat,lon,2,true)
                     toprint = toprint..'\nMGRS: '.. mist.tostringMGRS(mgrs, 5)
-                    toprint = toprint..'\n\nAlt: '..math.floor(alt)..'m'..' | '..math.floor(alt*3.280839895)..'ft'
                 end
+				
+				local me = Group.getByName(self.name)
+                if not me then return end
+                local meun = me:getUnit(1)
+
+                local bearing = SelfJtac.getBearing(meun:getPoint(), pnt)
+                local unitDistance = SelfJtac.getDist(pnt, meun:getPoint())
+                toprint = toprint..'\n\Brg: '..math.floor(bearing)
+                toprint = toprint..'\n\Dst: '..string.format('%.2f', unitDistance/1000)..'km'
+				toprint = toprint..'\n\nAlt: '..math.floor(alt)..'m'..' | '..math.floor(alt*3.280839895)..'ft'
 			else
 				makeitlast = false
 				toprint = 'No Target'
@@ -263,6 +271,7 @@ do
 						self:setTarget(un)
                     else
                         self:clearTarget()
+						trigger.action.outTextForGroup(self.groupID, 'Kill confirmed. Stoping laser', 10)
 					end
 				else
                     local st = StaticObject.getByName(self.target)
@@ -270,6 +279,7 @@ do
                         self:setTarget(st)
                     else
                         self:clearTarget()
+                        trigger.action.outTextForGroup(self.groupID, 'Kill confirmed. Stoping laser', 10)
 					end
                 end
 			end
@@ -297,6 +307,10 @@ do
 		
 
 		return brg
+	end
+
+    function SelfJtac.getPointOnSurface(point)
+		return {x = point.x, y = land.getHeight({x = point.x, y = point.z}), z= point.z}
 	end
 
 	function SelfJtac.getHeadingDiff(heading1, heading2) -- heading1 + result == heading2
@@ -408,8 +422,8 @@ do
     SelfJtac.aircraftStats = {
         ['SA342L'] =        { minDist = 10, maxDeviation = 120, laserOffset = { x = 1.4, y = 1.1, z = -0.35 }  },
         ['SA342M'] =        { minDist = 15, maxDeviation = 120, laserOffset =  { x = 1.4, y = 1.23, z = -0.35 }   },
-        ['UH-60L'] =        { minDist = 10,  maxDeviation = 45,  laserOffset = { x = 4.65, y = -1.8, z = 0 }   },
-        ['OH-6A'] =         { minDist = 10,  maxDeviation = 45,  laserOffset = { x = 1.35, y = 0.1, z = 0 }   },
+        ['UH-60L'] =        { minDist = 8,  maxDeviation = 45,  laserOffset = { x = 4.65, y = -1.8, z = 0 }   },
+        ['OH-6A'] =         { minDist = 8,  maxDeviation = 45,  laserOffset = { x = 1.35, y = 0.1, z = 0 }   },
     }
 
     SelfJtac.jtacs = {}

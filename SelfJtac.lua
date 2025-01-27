@@ -4,7 +4,9 @@ SelfJTAC
 
 Allows self lasing for UH-60, OH-6 and Gazelle aircraft.
 
-Just add it to the mission in a doscriptfile action.
+Just add it to the mission in a doscriptfile action. 
+
+Only works for aircraft that are set up as Client (not Player).
 
 The use of mist is optional, but it enables coordinates to be displayed for the target.
 

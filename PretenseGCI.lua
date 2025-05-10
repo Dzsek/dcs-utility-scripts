@@ -228,6 +228,7 @@ do
                         for _,d in ipairs(detected) do
                             if d and d.object and d.object.isExist and d.object:isExist() and 
                                 Object.getCategory(d.object) == Object.Category.UNIT and
+                                (d.object:hasAttribute("Planes") or d.object:hasAttribute("Helicopters")) and
                                 d.object.getCoalition and
                                 d.object:getCoalition() == self.tgtSide then
                                     
